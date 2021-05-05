@@ -1,0 +1,40 @@
+import numpy as np
+
+
+def score_game(game_core):
+    '''Запускаем игру 1000 раз, чтобы узнать, как быстро игра угадывает число'''
+    count_ls = []
+    np.random.seed(1)  # фиксируем RANDOM SEED, чтобы ваш эксперимент был воспроизводим!
+    random_array = np.random.randint(1,101, size=(1000))
+    for number in random_array:
+        count_ls.append(game_core(number))
+    score = int(np.mean(count_ls))
+    print(f"Ваш алгоритм угадывает число в среднем за {score} попыток")
+    return(score)
+
+
+def game_core_v3(number):
+    '''Первое число всегда будет 50, шаг тоже приравниваем к первому числу,
+    а потом уменьшаем или увеличиваем его в зависимости от того, 
+    больше оно или меньше нужного.'''
+    count = 0  # счетчик
+    predict = 50  # предполагаемое число
+    step = predict # шаг
+    while True:   # бесконечный цикл
+        count += 1                   # плюсуем попытку
+        if number == predict: break  
+            
+        elif step == 1 and number < predict: # уменьшаем размер шага до еденицы
+            predict -= step
+        elif step == 1 and number > predict:
+            predict += step
+            
+        elif number > predict: 
+            predict += int(step / 2)  # изменяем предпологаемое число
+            step = int(step / 2)  # присваеваем новое значение шагу
+        elif number < predict:
+            predict -= int(step / 2)
+            step = int(step / 2)
+            
+    return(count) # выход из цикла, если угадали
+score_game(game_core_v3)  # Проверяем
